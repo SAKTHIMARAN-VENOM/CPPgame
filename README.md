@@ -1,9 +1,7 @@
-# 🚀 Space Shooter — Week 1
+#  Space Shooter — Week 1
 ### Topics: SFML Setup · Game Loop · Player Class · Movement · Delta Time
 
 ---
-
-## 🎯 What Was Built This Week
 
 This is the **foundation** of the Space Shooter game. No bullets or enemies yet — just the core architecture every game needs before anything else can be added.
 
@@ -75,62 +73,6 @@ g++ main.cpp -o SpaceShooter.exe -IC:\SFML\include -LC:\SFML\lib ^
 
 ---
 
-## 🧠 Key Concepts Learned This Week
-
-### 1. The Game Loop
-Every game runs the same three-step cycle every frame:
-```
-while (window is open):
-    1. processEvents()  ← read keyboard, mouse, window close
-    2. update()         ← move objects, run logic
-    3. render()         ← draw everything to the screen
-```
-
-### 2. Delta Time
-Without delta time, your game runs at different speeds on different computers.
-
-```cpp
-float dt = clock.restart().asSeconds();
-position.x += speed * dt;  // moves at 300 pixels/second regardless of FPS
-```
-
-If the frame takes 0.016s (60 FPS):   move = 300 × 0.016 = **4.8 px**
-If the frame takes 0.033s (30 FPS):   move = 300 × 0.033 = **9.9 px**
-
-Both result in the same distance over 1 second. ✅
-
-### 3. OOP — The Player Class
-
-The `Player` class encapsulates everything about the spaceship:
-
-```
-Player
-├── Data (private)
-│   ├── shipShape    ← visual triangle hull
-│   ├── wing1/wing2  ← wing shapes
-│   ├── engine       ← engine glow
-│   ├── speed        ← movement speed
-│   └── position     ← current center position
-│
-└── Methods (public)
-    ├── Player(x, y)          ← constructor, set up shapes
-    ├── update(dt, window)    ← handle input, move
-    ├── render(window)        ← draw to screen
-    ├── getPosition()         ← read-only position getter
-    └── getBounds()           ← bounding box for collision (used in later weeks)
-```
-
-### 4. Boundary Clamping
-Keeps the player inside the screen at all times:
-```cpp
-if (position.x < 22.f)          position.x = 22.f;      // left wall
-if (position.x > winW - 22.f)   position.x = winW - 22.f; // right wall
-```
-
-### 5. Scrolling Stars
-Each star has its own random speed. When a star falls off the bottom, it wraps back to the top — creating an infinite scroll effect with no extra memory allocation.
-
----
 
 ## 🔍 Code Walkthrough
 
@@ -147,12 +89,7 @@ main()
 
 ---
 
-## ⏭️ What's Coming in Week 2
 
-- **Bullet class** — fire bullets with Spacebar
-- **Shooting cooldown** — can't spam fire every frame
-- **Bullet movement** — travels upward and disappears off-screen
-- **std::vector** — store multiple bullets dynamically
 
 ---
 
