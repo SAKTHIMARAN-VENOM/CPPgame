@@ -1,8 +1,3 @@
-// ============================================================
-// SPACE SHOOTER - WEEK 1
-// Topics: SFML Window, Game Loop, Player Class, Movement,
-//         Delta Time, OOP Basics
-// ============================================================
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -10,75 +5,58 @@
 #include <iostream>
 #include <sstream>
 
-// ============================================================
-// PLAYER CLASS
-// Represents the player's spaceship.
-// Handles rendering and left/right movement.
-// ============================================================
-class Player {
+
 private:
-    sf::ConvexShape shipShape;   // Main body - triangle hull
-    sf::RectangleShape wing1;    // Left wing
-    sf::RectangleShape wing2;    // Right wing
-    sf::RectangleShape engine;   // Engine glow at bottom
+    sf::ConvexShape shipShape;   
+    sf::RectangleShape wing1;    
+    sf::RectangleShape wing2;    
+    sf::RectangleShape engine;   
 
-    float speed;                 // Pixels per second
-    sf::Vector2f position;       // Center position of ship
-
+    float speed;                 
+    sf::Vector2f position;       
 public:
-    // --------------------------------------------------------
-    // Constructor: set starting position and appearance
-    // --------------------------------------------------------
+   
     Player(float startX, float startY) {
         speed    = 300.f;
         position = sf::Vector2f(startX, startY);
 
-        // --- Main triangular hull ---
-        // A ConvexShape lets us define any convex polygon.
-        // We use 3 points to form a triangle pointing upward.
         shipShape.setPointCount(3);
-        shipShape.setPoint(0, sf::Vector2f( 0.f, -30.f));  // Top tip
-        shipShape.setPoint(1, sf::Vector2f(-20.f,  20.f)); // Bottom-left
-        shipShape.setPoint(2, sf::Vector2f( 20.f,  20.f)); // Bottom-right
+        shipShape.setPoint(0, sf::Vector2f( 0.f, -30.f));  
+        shipShape.setPoint(1, sf::Vector2f(-20.f,  20.f)); 
+        shipShape.setPoint(2, sf::Vector2f( 20.f,  20.f)); 
         shipShape.setFillColor(sf::Color::Cyan);
         shipShape.setOutlineThickness(1.5f);
         shipShape.setOutlineColor(sf::Color(0, 200, 255));
 
-        // --- Left wing ---
         wing1.setSize(sf::Vector2f(15.f, 10.f));
         wing1.setOrigin(15.f, 5.f);
         wing1.setFillColor(sf::Color(0, 180, 220));
 
-        // --- Right wing ---
+        
         wing2.setSize(sf::Vector2f(15.f, 10.f));
         wing2.setOrigin(0.f, 5.f);
         wing2.setFillColor(sf::Color(0, 180, 220));
 
-        // --- Engine glow ---
+       
         engine.setSize(sf::Vector2f(10.f, 8.f));
         engine.setOrigin(5.f, 0.f);
         engine.setFillColor(sf::Color(255, 140, 0));
 
-        // Place everything at starting position
+
         updateShapePositions();
     }
 
-    // --------------------------------------------------------
-    // update(): Move the player based on keyboard input.
-    // deltaTime ensures movement is frame-rate independent.
-    // --------------------------------------------------------
     void update(float deltaTime, const sf::RenderWindow& window) {
-        // Move left
+       
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             position.x -= speed * deltaTime;
         }
-        // Move right
+     
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             position.x += speed * deltaTime;
         }
 
-        // --- Boundary clamping ---
-        // Keep at least 22px from each side wall
+        
         float halfW = 22.f;
         float winW  = static_cast<float>(window.getSize().x);
         if (position.x < halfW)          position.x = halfW;
@@ -87,9 +65,7 @@ public:
         updateShapePositions();
     }
 
-    // --------------------------------------------------------
-    // render(): Draw all ship parts to the window.
-    // --------------------------------------------------------
+
     void render(sf::RenderWindow& window) const {
         window.draw(wing1);
         window.draw(wing2);
@@ -97,9 +73,7 @@ public:
         window.draw(shipShape);
     }
 
-    // --------------------------------------------------------
-    // Getters
-    // --------------------------------------------------------
+
     sf::Vector2f getPosition() const { return position; }
 
     sf::FloatRect getBounds() const {
@@ -107,10 +81,7 @@ public:
     }
 
 private:
-    // --------------------------------------------------------
-    // updateShapePositions(): Sync all shape positions
-    // to the single 'position' center point.
-    // --------------------------------------------------------
+ 
     void updateShapePositions() {
         shipShape.setPosition(position);
         wing1.setPosition(position.x - 20.f, position.y + 10.f);
@@ -119,22 +90,19 @@ private:
     }
 };
 
-// ============================================================
-// GAME CLASS
-// Owns the window, game loop, and all game objects.
-// ============================================================
+
 class Game {
 private:
     sf::RenderWindow window;
     Player           player;
     sf::Clock        clock;      // Used to compute delta time each frame
 
-    // UI
-    sf::Font font;
-    sf::Text infoText;           // Shows controls at top of screen
-    sf::Text fpsText;            // Live FPS counter (debug)
 
-    // Scrolling background stars
+    sf::Font font;
+    sf::Text infoText;         
+    sf::Text fpsText;            
+
+
     struct Star {
         sf::CircleShape shape;
         float speed;
@@ -142,9 +110,6 @@ private:
     std::vector<Star> stars;
 
 public:
-    // --------------------------------------------------------
-    // Constructor: create window, load font, init objects
-    // --------------------------------------------------------
     Game()
         : window(sf::VideoMode(800, 600), "Space Shooter - Week 1",
                  sf::Style::Titlebar | sf::Style::Close),
@@ -152,20 +117,20 @@ public:
     {
         window.setFramerateLimit(60);
 
-        // Load font — place arial.ttf next to the executable
+        
         if (!font.loadFromFile("arial.ttf")) {
             std::cerr << "[Warning] arial.ttf not found. Text wont display.\n"
                       << "  -> Place a .ttf font file in the same folder as the exe.\n";
         }
 
-        // Controls hint text
+       
         infoText.setFont(font);
         infoText.setCharacterSize(16);
         infoText.setFillColor(sf::Color(180, 180, 180));
         infoText.setString("Arrow Keys: Move   |   ESC: Quit");
         infoText.setPosition(10.f, 570.f);
 
-        // FPS counter text
+     
         fpsText.setFont(font);
         fpsText.setCharacterSize(14);
         fpsText.setFillColor(sf::Color(100, 255, 100));
@@ -174,18 +139,16 @@ public:
         initStars();
     }
 
-    // --------------------------------------------------------
     // run(): Main game loop.
-    //
     //   while (window is open):
-    //     1. Calculate deltaTime
-    //     2. Process OS events (close, keypresses)
-    //     3. Update game state
-    //     4. Render everything
-    // --------------------------------------------------------
+    //      Calculate deltaTime
+    //      Process OS events (close, keypresses)
+    //      Update game state
+    //      Render everything
+ 
     void run() {
         while (window.isOpen()) {
-            // --- Delta time ---
+
             // sf::Clock::restart() returns elapsed time AND resets the clock.
             float dt = clock.restart().asSeconds();
             // Cap to 0.1s so huge spikes (e.g. breakpoints) don't teleport objects
@@ -198,9 +161,8 @@ public:
     }
 
 private:
-    // --------------------------------------------------------
+ 
     // initStars(): Randomly scatter 60 stars across the screen.
-    // --------------------------------------------------------
     void initStars() {
         srand(42); // Fixed seed for reproducible layout
         for (int i = 0; i < 60; ++i) {
@@ -219,9 +181,9 @@ private:
         }
     }
 
-    // --------------------------------------------------------
+
     // processEvents(): Handle OS-level events.
-    // --------------------------------------------------------
+
     void processEvents() {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -236,9 +198,9 @@ private:
         }
     }
 
-    // --------------------------------------------------------
+
     // update(): Move stars and the player each frame.
-    // --------------------------------------------------------
+
     void update(float dt) {
         // Scroll stars downward at their individual speeds
         for (auto& s : stars) {
